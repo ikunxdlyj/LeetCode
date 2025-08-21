@@ -1,4 +1,4 @@
-package class1.class1_2;
+package class1.class1_1.class1_1_2;
 
 public class MinSwaps {
     // 所有的定长窗口问题,注意窗口长度为0的情况,这时候当 i=nums.length-1的时候,i - len + 1 等于 n,数组越界

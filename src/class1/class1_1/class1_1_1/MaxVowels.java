@@ -1,4 +1,4 @@
-package class1.class1_1;
+package class1.class1_1.class1_1_1;
 
 public class MaxVowels {
     public int maxVowels(String str, int k) {
