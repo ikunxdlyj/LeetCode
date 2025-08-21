@@ -1,4 +1,4 @@
-package class1.class1_1;
+package class1.class1_1.class1_1_1;
 
 public class MaxScore {
     //    public int maxScore(int[] cardPoints, int k) {
