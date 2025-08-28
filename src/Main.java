@@ -1,11 +1,9 @@
 import java.io.*;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Arrays;
 
 public class Main {
-    public static int N, target;
-    public static int[] arr = new int[100001];
-    public static Map<Integer, Integer> map;
+    public static int N;
+    public static int[] arr = new int[16];
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -13,8 +11,6 @@ public class Main {
         PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)));
         while (in.nextToken() != StreamTokenizer.TT_EOF) {
             N = (int) in.nval;
-            in.nextToken();
-            target = (int) in.nval;
             for (int i = 0; i < N; i++) {
                 in.nextToken();
                 arr[i] = (int) in.nval;
@@ -24,25 +20,32 @@ public class Main {
         out.flush();
         out.close();
         br.close();
-
     }
+
+    public static int[] cnt = new int[101];
 
     public static long process() {
-        map = new HashMap<Integer, Integer>();
-        long cnt = 0;
+        Arrays.fill(cnt, 0);
         for (int i = 0; i < N; i++) {
-            map.put(arr[i], map.getOrDefault(arr[i], 0) + 1);
-            cnt += arr[i] * 2 == target ? 0 : map.getOrDefault(target - arr[i], 0);
-
+            cnt[arr[i]]++;
         }
-        cnt <<= 1;
-        for (int i = 0; i < N; i++) {
-            if (arr[i] * 2 == target) {
-                cnt++;
-            }
-        }
-        return cnt;
+        return f(0, 1);
     }
 
+    public static long f(int i, int last) {
+        if (i == N) {
+            return 1;
+        }
+        long ans = 0;
+        for (int j = 1; j <= 100; j++) {
+            if (cnt[j] > 0 && (j % last == 0 || last % j == 0)) {
+                cnt[j]--;
+                // 数值相同的j并不能只看成一个，所以我们要利用乘法原理，乘以j的数量
+                ans += (cnt[j] + 1) * f(i + 1, j);
+                cnt[j]++;
+            }
+        }
+        return ans;
+    }
 
 }
