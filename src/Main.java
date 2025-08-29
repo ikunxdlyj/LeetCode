@@ -1,20 +1,29 @@
 import java.io.*;
-import java.util.Arrays;
 
 public class Main {
-    public static int N;
-    public static int[] arr = new int[16];
+    public static int a, b;
+    public static char op;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StreamTokenizer in = new StreamTokenizer(br);
+        // 设置操作符为普通字符，确保正确读取
+        in.ordinaryChar('+');
+        in.ordinaryChar('-');
+        in.ordinaryChar('*');
+        in.ordinaryChar('/');
+        in.ordinaryChar('^');
         PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)));
-        while (in.nextToken() != StreamTokenizer.TT_EOF) {
-            N = (int) in.nval;
-            for (int i = 0; i < N; i++) {
-                in.nextToken();
-                arr[i] = (int) in.nval;
-            }
+
+        in.nextToken();
+        int N = (int) in.nval;
+        for (int i = 0; i < N; i++) {
+            in.nextToken();
+            a = (int) in.nval;
+            in.nextToken();
+            b = (int) in.nval;
+            in.nextToken();
+            op = (char) in.ttype; // 直接获取操作符字符
             out.println(process());
         }
         out.flush();
@@ -22,30 +31,38 @@ public class Main {
         br.close();
     }
 
-    public static int[] cnt = new int[101];
-
-    public static long process() {
-        Arrays.fill(cnt, 0);
-        for (int i = 0; i < N; i++) {
-            cnt[arr[i]]++;
+    public static char process() {
+        switch (op) {
+            case '+':
+            case '*':
+                return '=';
+            case '-':
+                if (a == b) return '=';
+                else if (a > b) return '>';
+                else return '<';
+            case '/':
+                int div1 = a / b;
+                int div2 = b / a;
+                if (div1 == div2) return '=';
+                else if (div1 > div2) return '>';
+                else return '<';
+            case '^':
+                if (a == b) return '=';
+                if (a == 1) return '<';
+                if (b == 1) return '>';
+                double loga = Math.log(a);
+                double logb = Math.log(b);
+                double left = b * loga;
+                double right = a * logb;
+                if (Math.abs(left - right) < 1e-10) {
+                    return '=';
+                } else if (left < right) {
+                    return '<';
+                } else {
+                    return '>';
+                }
+            default:
+                return '#'; // 不应发生
         }
-        return f(0, 1);
     }
-
-    public static long f(int i, int last) {
-        if (i == N) {
-            return 1;
-        }
-        long ans = 0;
-        for (int j = 1; j <= 100; j++) {
-            if (cnt[j] > 0 && (j % last == 0 || last % j == 0)) {
-                cnt[j]--;
-                // 数值相同的j并不能只看成一个，所以我们要利用乘法原理，乘以j的数量
-                ans += (cnt[j] + 1) * f(i + 1, j);
-                cnt[j]++;
-            }
-        }
-        return ans;
-    }
-
 }
